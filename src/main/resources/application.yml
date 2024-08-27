@@ -1,0 +1,34 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: test-demo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: provider-user # 路由规则id，自定义，唯一
+          uri: lb://provider-user # 路由的目标服务，lb代表负载均衡，会从注册中心拉取服务列表
+          predicates: # 路由断言，判断当前请求是否符合当前规则，符合则路由到目标服务
+            - Path=/items/**,/search/** # 这里是以请求路径作为判断规则
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://user:password123@121.5.179.95:8761/eureka
+#      defaultZone: http://user:password123@127.0.0.1:8761/eureka
+
+zuul:
+  routes:
+    user-app:
+      path: /user/**
+      serviceId: provider-user
+    sidecar-app:
+      path: /sidecar/**
+      serviceId: sidecar
+
+feign:
+  httpclient:
+    enabled: true
