@@ -10,6 +10,7 @@ public class TestDemoApplicationTest {
     @Test
     public void demo() {
         System.out.println("true = " + true);
+        System.out.println("true = " + true);
     }
 
 }
