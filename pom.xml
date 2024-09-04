@@ -13,7 +13,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>commons</artifactId>
+    <artifactId>cloud-commons</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
