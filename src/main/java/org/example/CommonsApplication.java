@@ -11,7 +11,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableDiscoveryClient
 //@EnableFeignClients(basePackages = {"org.example.feign.**"})
-//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @MapperScan(basePackages = {"org.example.**.mapper", "org.example.**.dao"})
 @EntityScan(basePackages = {"org.example.**.entity"})
 @SpringBootApplication

@@ -26,7 +26,7 @@ public class ProviderCommonsController {
     @GetMapping("/hello/{name}")
     @ApiOperation(value = "commons测试", notes = "cloud-commons", httpMethod = "GET")
     public String hello(@PathVariable String name) {
-        return springName + ":" + port + " || hello :" + name;
+        return springName + ":" + port + " ||| hello :" + name;
     }
 
 }

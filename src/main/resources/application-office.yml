@@ -1,5 +1,5 @@
 server:
-  port: 7908
+  port: 7907
 
 spring:
   profiles: office
