@@ -16,7 +16,7 @@ spring:
 
 eureka:
   instance:
-    hostname: 123.249.43.78
+    hostname: 127.0.0.1
   client:
     serviceUrl:
 #      defaultZone: http://user:password123@127.0.0.1:8761/eureka

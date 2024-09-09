@@ -5,14 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.example.until.LogUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Create by Administrator
@@ -30,8 +26,9 @@ public class ProviderCommonsController {
     @GetMapping("/hello/{name}")
     @ApiOperation(value = "commons测试", notes = "cloud-commons", httpMethod = "GET")
     public String hello(@PathVariable String name) {
-        String log = logUtils.log();
-        return log + " ||>| hello :" + name;
+        String logs = logUtils.log();
+        log.info("服务信息 = {}",logs);
+        return logs + " ||>| hello :" + name;
     }
 
 }
