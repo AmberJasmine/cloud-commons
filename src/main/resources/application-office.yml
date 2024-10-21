@@ -4,14 +4,14 @@ server:
 spring:
   profiles: office
   redis:
-    host: localhost
+    host: 123.249.43.78
     port: 6379
     password: Da755734
     database: 0
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://121.5.179.95:3306/db1?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://121.5.179.95:3306/common?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     #    serviceTimezone=Asia/Shanghai
     username: root
     password: Da@755734

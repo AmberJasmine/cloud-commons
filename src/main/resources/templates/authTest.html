@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <script type="text/javascript" src="../js/axios.js"></script>
+    <!-- 引入 http-vue-loader -->
+    <script src="https://unpkg.com/http-vue-loader"></script>
+
+    <link rel="stylesheet" href="../js/node_modules/element-ui/lib/theme-chalk/index.css">
+    <script src="../js/node_modules/element-ui/lib/index.js"></script>
+
+    <!--<script src="https://cdn.staticfile.org/vue/2.7.0/vue.min.js"></script>-->
+    <!-- 引入样式 -->
+    <!--		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <!-- 引入组件库 -->
+    <!--		<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+    <div v-if="">
+        IP:<label>&nbsp;{{custIp}}</label>
+    </div>
+    <div v-if="ipAddress !== ''">
+        地址:<label>&nbsp;{{ipAddress}}</label>
+    </div>
+    <div style="color: red; font-size: large">
+        <label>&nbsp;{{authMessage}}</label>
+    </div>
+    <br>
+    <div v-if="showFunction">
+
+        <el-card>
+            <!--文件上传-->
+            <div class="line" v-if="showFunction">
+                <div style="margin-top: 20px; margin-bottom: 30px">
+                    文件：
+                    <input type="file" name="file" id="upload" />
+                    <button @click="oneUpload">提交</button>
+                </div>
+            </div>
+            <!--            {{currentDate}}-->
+            <!--            <br>-->
+            <!--            <br>-->
+            <!--            <button @click="getChildData()">获取子组件nodeId</button>-->
+            <!--            <button @click="filesByMaster()">挂载的数据</button>-->
+        </el-card>
+
+        <el-container>
+            <el-aside width="38%">
+                <el-card>
+                    <my-component-tree ref="myComponent" @node-click="filesByMasterSSS" @checkbox-click="filesByMasterSSS" @clear-click="clearSSS"></my-component-tree>
+                </el-card>
+            </el-aside>
+            <el-main>
+                <div>
+                    已经选择：{{multipleSelection.length}}
+                    <el-table :data="fileByMasterData"
+                              style="width: 100%"
+                              ref="multipleTable"
+                              @selection-change="handleSelectionChange"
+                              @sort-change="sortChanges"
+                              :row-key="getRowKey" border>
+                        <el-table-column type="selection" width="55" :reserve-selection="true">
+                        </el-table-column>
+                        <!--            <el-table-column prop="id" label="编号" width="180">-->
+                        <!--            </el-table-column>-->
+                        <el-table-column prop="fileName" label="文件名称" width="360">
+                        </el-table-column>
+                        <el-table-column prop="masterName" label="节点" width="200" sortable="custom">
+                        </el-table-column>
+                        <el-table-column prop="createTime" label="上传时间" width="175" sortable="custom">
+                        </el-table-column>
+                        <el-table-column fixed="right" label="操作" width="100">
+                            <template slot-scope="scope">
+                                <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="block">
+                        <!--<span class="demonstration">完整功能</span>-->
+                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageCurrent" :page-sizes="[5, 10, 20, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                        </el-pagination>
+                    </div>
+                </div>
+            </el-main>
+        </el-container>
+    </div>
+</div>
+
+<script>
+    Vue.use(httpVueLoader);
+    new Vue({
+        el: "#app",
+        data: {
+            currentDate: new Date(),
+            url: '',
+            custIp: '',
+            ipAddress: '',
+            authMessage: '',
+            showFunction: true,
+            rules: {},
+
+            childData: {
+                currentNodeId: '',
+                currentCheckedNodeIds: []
+            },
+
+            // 关联的附件
+            multipleSelection: [],
+            fileByMasterData: [],
+            pageCurrent: 1,
+            pageSize: 5,
+            total: 0,
+            pages: 1,
+
+            sort: {
+                prop: null,
+                order: null
+            }
+
+        },
+        components: {
+            'my-component-dict': 'url:./vue/dict.vue',
+            'my-component-tree': 'url:./vue/blackWhithTree.vue',
+            'my-component-blackwhith': 'url:./vue/blackWhith.vue',
+            'my-component-blackwhithlist': 'url:./vue/blackWhithList.vue',
+            'my-component-blackwhithadd': 'url:./vue/blackWhithAdd.vue'
+        },
+        created() {
+            this.custIps();
+            this.ipaddress();
+
+        },
+        mounted: function() {},
+        methods: {
+            getChildData(){
+                var childCurrentNodeId = this.$refs.myComponent.currentNodeId;
+                this.childData.currentNodeId = childCurrentNodeId;
+                let message = "";
+                message = "当前选中的节点是:"+this.childData.currentNodeId;
+                if(this.childData.currentNodeId === ""){
+                    message = "请单选一个节点";
+                }
+                alert(message)
+            },
+
+            // 权限信息
+            auth() {
+                axios.post(this.url + '/black/white/auth?ip='+this.custIp, {}).then(response => {
+                    if (response.data.success) {
+                        this.authMessage = response.data.msg;
+                        if(response.data.data <= 0){
+                            this.showFunction = false;
+                        }
+                    } else {
+                        alert(response.data.msg);
+                    }
+                }).catch(error => {
+                    console.error(error);
+                    alert('权限信息失败,'+error.getText());
+                });
+            },
+
+            // 获取客户ip
+            custIps() {
+                axios.post(this.url + '/login/custIp', {}).then(response => {
+                    if (response.data.success) {
+                        this.custIp = response.data.data;
+                        this.auth();
+                    } else {
+                        alert(response.data.msg);
+                    }
+                }).catch(error => {
+                    console.error(error);
+                    alert('获取客户ip');
+                });
+            },
+
+            // 获取ip地址
+            ipaddress() {
+                axios.post(this.url + '/login/ipAddress', {}).then(response => {
+                    if (response.data.success) {
+                        this.ipAddress = response.data.data;
+                    } else {
+                        alert(response.data.msg);
+                    }
+                }).catch(error => {
+                    console.error(error);
+                    alert('获取ip地址');
+                });
+            },
+
+
+            oneUpload() {
+                var childCurrentNodeId = this.$refs.myComponent.currentNodeId;
+                this.childData.currentNodeId = childCurrentNodeId;
+                var childCurrentCheckNodeIds = this.$refs.myComponent.currentCheckedNodeIds;
+                this.childData.currentCheckedNodeIds = childCurrentCheckNodeIds;
+                console.log("上传"+this.childData.currentNodeId)
+                console.log("上上传"+this.childData.currentCheckedNodeIds.length)
+                let relId = "";
+                if(this.childData.currentNodeId !== ''){
+                    relId = this.childData.currentNodeId;
+                }else{
+                    if(this.childData.currentCheckedNodeIds.length !== 1){
+                        alert("请单选一个节点");
+                        return
+                    }
+                    relId = this.childData.currentCheckedNodeIds[0];
+                }
+
+                var file = document.getElementById("upload").files[0];
+                console.log("单文件上传日志,", file);
+                var formData = new FormData();
+                formData.append("file", file);
+                formData.append("masterId", relId);
+                formData.append("belongModel", "tree");
+                formData.append("hasLogin", "0");
+                let temp = this;
+                console.log("this = ",this);
+                console.log("temp = ",temp);
+                $.ajax({
+                    type: 'POST',
+                    url: this.url+'/file/upload-v1',
+                    //是否把上传的数据,处理为对象,默认为true  
+                    processData: false,
+                    //避免让jquery 设置请求头有可能会破坏分隔符。 而使服务器不能正常解析文件
+                    contentType: false,
+                    data: formData,
+                    success: function(data) {
+                        alert(JSON.stringify(data));
+                        temp.filesByMaster();
+                    }
+                })
+            },
+
+            filesByMasterSSS(val1, val2){
+                // alert("拿到了子组件的数据:"+val1);
+                console.log("拿到了子组件的数据【单选】",val1)
+                // alert("拿到了子组件的数据:"+val2);
+                console.log("拿到了子组件的数据【多选】",val2)
+
+                this.fileByMasterData = [];
+                this.filesByMaster();
+            },
+
+            clearSSS(p){
+                console.log("清空传来的参数",p)
+                var childCurrentCheckNodeIds = this.$refs.myComponent.currentCheckedNodeIds;
+                this.childData.currentCheckedNodeIds = childCurrentCheckNodeIds;
+                console.log("refs获取子组件节点ids",childCurrentCheckNodeIds)
+
+                this.fileByMasterData = [];
+                this.filesByMaster();
+            },
+
+            // 获取关联的附件
+            filesByMaster() {
+                var childCurrentNodeId = this.$refs.myComponent.currentNodeId;
+                this.childData.currentNodeId = childCurrentNodeId;
+                var childCurrentCheckNodeIds = this.$refs.myComponent.currentCheckedNodeIds;
+                this.childData.currentCheckedNodeIds = childCurrentCheckNodeIds;
+                console.log("============================================================");
+                console.log(this.childData.currentNodeId);
+                console.log(this.childData.currentCheckedNodeIds);
+
+                let masterIds = [];
+                // debugger
+                if(this.childData.currentNodeId === "" && this.childData.currentCheckedNodeIds.length === 0){
+                    console.log("无任何选择进来了")
+                    return
+                }
+                if(this.childData.currentNodeId !== ""){
+                    masterIds = [this.childData.currentNodeId];
+                }
+                if(this.childData.currentNodeId === ""){
+                    masterIds = this.childData.currentCheckedNodeIds;
+                }
+
+                axios.post(this.url + '/fileByMasterId/pages', {
+                    "belongModel": "tree",
+                    "masterIds": masterIds,
+                    "masterId000": "1811965038482063362",
+                    "pageCurrent": this.pageCurrent,
+                    "pageSize": this.pageSize,
+                    "prop": this.sort.prop,
+                    "order": this.sort.order
+                }).then(response => {
+                    if (response.data.success) {
+                        this.fileByMasterData = response.data.data.list;
+                        this.pages = response.data.data.pages;
+                        this.total = response.data.data.total;
+                        console.log("获取关联的附件 = ", this.fileByMasterData);
+                    } else {
+                        alert(response.data.msg);
+                    }
+                }).catch(error => {
+                    console.error(error);
+                    alert('获取关联的附件失败');
+                });
+            },
+
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.pageCurrent = 1;
+                console.log(`每页 ${val} 条`);
+                this.filesByMaster();
+            },
+
+            handleCurrentChange(val) {
+                this.pageCurrent = val;
+                console.log(`当前页: ${val}`);
+                this.filesByMaster();
+            },
+
+            handleSelectionChange(val){
+                console.log("多选选择的数据，",val);
+                this.multipleSelection = val;
+                if(val.length > 0){
+                    console.log("多选选择的最新数据",val[val.length-1].id);
+                }
+            },
+
+            sortChanges(val) {
+                console.log("节点关联的附件排序信息，，，", val);
+                // debugger
+                this.sort.order = val.order;
+                if(this.sort.order === null){
+                    this.sort.prop = this.sort.order;
+                } else {
+                    this.sort.prop = val.prop;
+                }
+                this.filesByMaster();
+            },
+
+            del(scope) {
+                console.log(scope);
+                alert("待实现"+this.sort.prop+","+this.sort.order);
+            },
+
+            getRowKey(row){
+                console.log("getRowKey，，，",row);
+                return row.id;
+            },
+
+        }
+    });
+</script>
+</body>
+</html>

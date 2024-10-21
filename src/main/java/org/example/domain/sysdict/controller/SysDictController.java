@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.example.config.WhiteListConfig;
 import org.example.domain.sysdict.dto.SysDictDto;
 import org.example.domain.sysdict.service.SysDictService;
 import org.example.domain.sysdict.vo.SysDictVo;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Api(tags = {"数据字典"})
 @Slf4j
 @RestController
@@ -25,9 +28,16 @@ public class SysDictController extends ApiController {
     @Autowired
     private SysDictService sysDictService;
 
+    @Autowired
+    private WhiteListConfig whiteListConfig;
+
     @ApiOperation(value = "条件查询分页", notes = "条件查询分页", httpMethod = "POST")
     @PostMapping("/page")
     public Result<Page<SysDictVo>> getPage(@RequestBody SysDictDto dto) {
+        List<String> interfaceList =
+                this.whiteListConfig.getInterfaceList();
+        System.out.println("interfaceList = " + interfaceList);
+
         try {
             return this.sysDictService.getPage(dto);
         } catch (Exception e) {

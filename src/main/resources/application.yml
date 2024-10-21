@@ -14,14 +14,18 @@ spring:
           predicates: # 路由断言，判断当前请求是否符合当前规则，符合则路由到目标服务
             - Path=/items/**,/search/** # 这里是以请求路径作为判断规则
 
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 eureka:
   instance:
     hostname: 127.0.0.1
   client:
     serviceUrl:
 #      defaultZone: http://user:password123@127.0.0.1:8761/eureka
-#      defaultZone: http://user:password123@121.5.179.95:8761/eureka
-      defaultZone: http://user:password123@123.249.43.78:8761/eureka
+      defaultZone: http://user:password123@121.5.179.95:8761/eureka
+#      defaultZone: http://user:password123@123.249.43.78:8761/eureka
 
 zuul:
   routes:
@@ -35,3 +39,19 @@ zuul:
 feign:
   httpclient:
     enabled: true
+
+whitelist:
+  interfaceList:
+    - /sys-dict/**
+    - /sys-dict-data/**
+    - /tab
+    - /**
+
+token:
+  expires: 10
+
+md5-key: isstech
+
+message:
+  Uid: messagemsm
+  Key: 4244290725705277C83EE681D1F5E02F
