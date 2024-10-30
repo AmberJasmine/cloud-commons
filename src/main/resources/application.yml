@@ -20,7 +20,7 @@ mybatis-plus:
 
 eureka:
   instance:
-    hostname: 127.0.0.1
+    hostname: 123.249.43.78
   client:
     serviceUrl:
 #      defaultZone: http://user:password123@127.0.0.1:8761/eureka

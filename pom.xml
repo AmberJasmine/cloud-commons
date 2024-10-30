@@ -244,6 +244,14 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>visual.check.sdk</groupId>
+            <artifactId>visual.check.sdk</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/commons-httpclient-3.1.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
