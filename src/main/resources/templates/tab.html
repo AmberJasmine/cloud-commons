@@ -371,6 +371,7 @@
 								localStorage.setItem("login-token", response.data.data.token);
 								localStorage.setItem("login-profilePhoto", response.data.data.profilePhoto);
 								localStorage.setItem("login-userAgent", response.data.data.userAgent);
+								localStorage.setItem("login-user-document", this.loginByPassWord.userName);
 
 								console.log("login-userName = ",localStorage.getItem("login-userName"));
 								console.log("login-realUserName = ",localStorage.getItem("login-realUserName"));
@@ -378,7 +379,7 @@
 								console.log("login-profilePhoto = ",localStorage.getItem("login-profilePhoto"));
 								console.log("login-userAgent = ",localStorage.getItem("login-userAgent"));
 								// 登录成功，跳转到首页
-								window.location.href = "authTest";
+								window.location.href = "auth";
 								this.userLoginLog(1,this.loginByPassWord.userName);
 							} else {
 								// 登录失败，显示错误信息

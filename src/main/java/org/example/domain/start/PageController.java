@@ -20,5 +20,9 @@ public class PageController {
         return "tab";
     }
 
+    @GetMapping("/auth")
+    public String auth() {
+        return "authTest";
+    }
 
 }

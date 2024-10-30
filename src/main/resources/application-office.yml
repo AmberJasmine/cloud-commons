@@ -24,3 +24,41 @@ spring:
       max-file-size: 20MB
       # 设置总上传的文件大小
       max-request-size: 40MB
+
+
+
+
+
+
+
+
+
+
+
+
+uploadPath: /usr/local/tomcat/apache-tomcat-8.5.77/webapps/uploadFile/
+downloadPath: /usr/local/tomcat/apache-tomcat-8.5.77/webapps/uploadFile/
+
+di-uploadPath: /src/main/resources/static/js/picture/
+di-downloadPath: /src/main/resources/static/js/picture/
+#di-uploadPath: /js/picture/
+#di-downloadPath: /js/picture/
+
+ico-file: http://121.5.179.95:8080/icoFile/
+ico-upload: /usr/local/tomcat/apache-tomcat-8.5.77/webapps/icoFile/
+#ico-upload: H:/abc/
+
+file:
+  #附件上传地址
+  uploadPath: /home/items/firstItem/upload/
+  #压缩文件临时地址
+  zipFilePath: /home/items/firstItem/zipfile/
+  #资源路径
+  uri: /file/
+
+#头像上传地址
+photo-file: http://121.5.179.95:8080/photoFile/
+photo-upload: /usr/local/tomcat/apache-tomcat-8.5.77/webapps/photoFile/
+#头像上传地址(本地测试)
+#photo-file: http://localhost:8080/photoFile/
+#photo-upload: I:\maven.m2\apache-tomcat-8.0.53\webapps\photoFile\

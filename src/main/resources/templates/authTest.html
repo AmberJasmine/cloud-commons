@@ -30,10 +30,13 @@
         IP:<label>&nbsp;{{custIp}}</label>
     </div>
     <div v-if="ipAddress !== ''">
-        地址:<label>&nbsp;{{ipAddress}}</label>
+        归属地:<label>&nbsp;{{ipAddress}}</label>
     </div>
-    <div style="color: red; font-size: large">
-        <label>&nbsp;{{authMessage}}</label>
+<!--    <div style="color: red; font-size: large">-->
+<!--        <label>&nbsp;{{authMessage}}</label>-->
+<!--    </div>-->
+    <div>
+        当前用户:<label>{{userName}}</label>
     </div>
     <br>
     <div v-if="showFunction">
@@ -57,7 +60,13 @@
         <el-container>
             <el-aside width="38%">
                 <el-card>
-                    <my-component-tree ref="myComponent" @node-click="filesByMasterSSS" @checkbox-click="filesByMasterSSS" @clear-click="clearSSS"></my-component-tree>
+                    <my-component-tree ref="myComponent" @node-click="filesByMasterSSS"
+                                       @checkbox-click="filesByMasterSSS"
+                                       @clear-click="clearSSS"
+                                       @reset-click="filesByMasterSSS"
+                                       @deletes-click="deletesSSS"
+                                       @tree-refresh-click="treeRefreshSSS"
+                    ></my-component-tree>
                 </el-card>
             </el-aside>
             <el-main>
@@ -105,6 +114,7 @@
             url: '',
             custIp: '',
             ipAddress: '',
+            userName: '',
             authMessage: '',
             showFunction: true,
             rules: {},
@@ -136,6 +146,7 @@
             'my-component-blackwhithadd': 'url:./vue/blackWhithAdd.vue'
         },
         created() {
+            this.userName = localStorage.getItem("login-userName");
             this.custIps();
             this.ipaddress();
 
@@ -153,35 +164,42 @@
                 alert(message)
             },
 
-            // 权限信息
-            auth() {
-                axios.post(this.url + '/black/white/auth?ip='+this.custIp, {}).then(response => {
-                    if (response.data.success) {
-                        this.authMessage = response.data.msg;
-                        if(response.data.data <= 0){
-                            this.showFunction = false;
-                        }
-                    } else {
-                        alert(response.data.msg);
-                    }
-                }).catch(error => {
-                    console.error(error);
-                    alert('权限信息失败,'+error.getText());
-                });
+            hemitest(){
+                var var1 = this.$refs.myComponent.currentNodeId;
+                var var2 = this.$refs.myComponent.currentCheckedNodeIds;
+                alert(var1);
+                alert(var2);
             },
+
+            // // 权限信息
+            // auth() {
+            //     axios.post(this.url + '/black/white/auth?ip='+this.custIp, {}).then(response => {
+            //         if (response.data.success) {
+            //             this.authMessage = response.data.msg;
+            //             if(response.data.data <= 0){
+            //                 this.showFunction = false;
+            //             }
+            //         } else {
+            //             alert(response.data.msg);
+            //         }
+            //     }).catch(error => {
+            //         console.error(error);
+            //         alert('权限信息失败,'+error.getText());
+            //     });
+            // },
 
             // 获取客户ip
             custIps() {
                 axios.post(this.url + '/login/custIp', {}).then(response => {
                     if (response.data.success) {
                         this.custIp = response.data.data;
-                        this.auth();
+                        // this.auth();
                     } else {
                         alert(response.data.msg);
                     }
                 }).catch(error => {
                     console.error(error);
-                    alert('获取客户ip');
+                    alert('获取客户ip？');
                 });
             },
 
@@ -263,15 +281,32 @@
                 this.filesByMaster();
             },
 
+            deletesSSS(var1,var2){
+                console.log("删除操作子组件传来的参数",var1,var2)
+                this.fileByMasterData = [];
+                this.filesByMaster("deletes-click");
+            },
+
+            treeRefreshSSS(var1,var2){
+                console.log("添加操作子组件传来的参数",var1,var2)
+                this.fileByMasterData = [];
+                this.filesByMaster("tree-refresh-click");
+            },
+
             // 获取关联的附件
-            filesByMaster() {
+            filesByMaster(flag) {
+                debugger
                 var childCurrentNodeId = this.$refs.myComponent.currentNodeId;
                 this.childData.currentNodeId = childCurrentNodeId;
                 var childCurrentCheckNodeIds = this.$refs.myComponent.currentCheckedNodeIds;
                 this.childData.currentCheckedNodeIds = childCurrentCheckNodeIds;
-                console.log("============================================================");
+                console.log("=======================================================12=====");
                 console.log(this.childData.currentNodeId);
                 console.log(this.childData.currentCheckedNodeIds);
+                if(flag === "deletes-click"){
+                    this.childData.currentNodeId = "";
+                    this.childData.currentCheckedNodeIds = [];
+                }
 
                 let masterIds = [];
                 // debugger

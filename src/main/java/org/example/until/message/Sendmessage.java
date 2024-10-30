@@ -1,45 +1,45 @@
 package org.example.until.message;
 
 
-//import org.apache.commons.httpclient.HttpClient;
-//import org.apache.commons.httpclient.NameValuePair;
-//import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.IOException;
 
 public class Sendmessage {
     private static String Url = "https://dx.ipyy.net/sms.aspx";
 
-//    public static void main(String[] args) {
-//        HttpClient client = new HttpClient();
-//        PostMethod method = new PostMethod(Url);
-//        String account = "OT00954";// 账户
-//        String password = "y2c7k5pe";// 密码
-//        String mobile = "19191709392";// 号码
-//        String content = "【神州】您的短信验证码为[9999]，一分钟内有效，信息安全，请勿泄露";// 短信内容  Your verification code is 5678[HuaXin]
-//        String result = encodeHexStr(8, content);
-//        client.getParams().setContentCharset("UTF-8");
-//        method.setRequestHeader("ContentType",
-//                "application/x-www-form-urlencoded;charset=UTF-8");
-//        NameValuePair[] data = {new NameValuePair("action", "send"),
-//                new NameValuePair("userid", ""),
-//                new NameValuePair("account", account),
-//                new NameValuePair("password", password),
-//                new NameValuePair("mobile", mobile),
-//                new NameValuePair("code", "8"),
-//                new NameValuePair("content", result),
-//                new NameValuePair("sendTime", ""),
-//                new NameValuePair("extno", ""),};
-//        method.setRequestBody(data);
-//        try {
-//            client.executeMethod(method);
-//            String Result = method.getResponseBodyAsString();
-//            System.out.println(Result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    public static void main(String[] args) {
+        HttpClient client = new HttpClient();
+        PostMethod method = new PostMethod(Url);
+        String account = "OT00954";// 账户
+        String password = "y2c7k5pe";// 密码
+        String mobile = "19191709392";// 号码
+        String content = "【神州】您的短信验证码为[9999]，一分钟内有效，信息安全，请勿泄露";// 短信内容  Your verification code is 5678[HuaXin]
+        String result = encodeHexStr(8, content);
+        client.getParams().setContentCharset("UTF-8");
+        method.setRequestHeader("ContentType",
+                "application/x-www-form-urlencoded;charset=UTF-8");
+        NameValuePair[] data = {new NameValuePair("action", "send"),
+                new NameValuePair("userid", ""),
+                new NameValuePair("account", account),
+                new NameValuePair("password", password),
+                new NameValuePair("mobile", mobile),
+                new NameValuePair("code", "8"),
+                new NameValuePair("content", result),
+                new NameValuePair("sendTime", ""),
+                new NameValuePair("extno", ""),};
+        method.setRequestBody(data);
+        try {
+            client.executeMethod(method);
+            String Result = method.getResponseBodyAsString();
+            System.out.println(Result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     // 字符编码成HEX
     public static String toHexString(String s) {

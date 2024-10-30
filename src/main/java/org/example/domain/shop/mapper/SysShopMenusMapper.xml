@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.domain.shop.mapper.SysShopMenusMapper">
+
+    <select id="nodeChildIds" parameterType="java.lang.String"
+            resultType="org.example.domain.shop.entity.SysShopMenus">
+        WITH RECURSIVE cte AS (
+          SELECT * FROM sys_shop_menus WHERE id = #{id,jdbcType=VARCHAR}
+          UNION ALL
+          SELECT t.* FROM sys_shop_menus t
+          INNER JOIN cte ON t.p_id = cte.id
+        )
+        SELECT * FROM cte where deleted='0';
+
+        -- SELECT a.*
+        -- FROM SYS_SHOP_MENUS a
+        -- START WITH a."id" = 2
+        -- CONNECT BY PRIOR a."id" = a."p_id"
+    </select>
+</mapper>

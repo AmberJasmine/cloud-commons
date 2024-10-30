@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.domain.file.mapper.UploadFileRelMapper">
+
+    <select id="pageByMasterId" parameterType="org.example.domain.file.dto.UploadFileRelQueryDto"
+            resultType="org.example.domain.file.vo.UploadFileEntityVo">
+
+        SELECT
+            a.id,
+            a.belong_model,
+            a.master_id,
+            c.`name` as masterName,
+            a.create_user as createBy,
+            a.deleted,
+            b.file_name as fileNameStorage,
+            MID(b.file_name,38) as fileName,
+            b.file_size,
+            b.file_type,
+            b.create_time,
+            b.real_url,
+            b.preview_url,
+            b.uuid,
+            b.equip,
+            b.directory,
+            b.storage_name
+        FROM
+            upload_file_rel a,
+            upload_file b,
+            sys_shop_menus c
+        <where>
+            a.file_id = b.uuid
+            AND a.master_id = c.id
+            AND a.deleted = '0'
+            <if test="queryDto.belongModel != null and queryDto.belongModel != ''">
+                AND a.belong_model = #{queryDto.belongModel,jdbcType=VARCHAR}
+            </if>
+            <if test="queryDto.createUser != null and queryDto.createUser != ''">
+                AND a.create_user = #{queryDto.createUser,jdbcType=VARCHAR}
+            </if>
+            and a.master_id in
+            <foreach collection="queryDto.masterIds" item="item" index="index" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </where>
+        <if test="queryDto.prop == null and queryDto.order == null">
+            ORDER BY b.create_time desc
+        </if>
+        <if test="queryDto.prop == 'createTime' and queryDto.order == 'descending'">
+            ORDER BY b.create_time desc
+        </if>
+        <if test="queryDto.prop == 'createTime' and queryDto.order == 'ascending'">
+            ORDER BY b.create_time asc
+        </if>
+        <if test="queryDto.prop == 'masterName' and queryDto.order == 'descending'">
+            ORDER BY a.master_id desc
+        </if>
+        <if test="queryDto.prop == 'masterName' and queryDto.order == 'ascending'">
+            ORDER BY a.master_id asc
+        </if>
+
+    </select>
+
+</mapper>

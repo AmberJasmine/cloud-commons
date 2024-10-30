@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.domain.file.mapper.StuMapper">
+    <sql id="Base_infor">
+    </sql>
+
+    <select id="selectAllAdd" resultType="org.example.domain.file.entity.StuEntity">
+        select * from stu
+    </select>
+
+    <select id="getAll" parameterType="java.util.List"
+            resultType="org.example.domain.file.entity.StuEntity">
+        select * from stu a
+        <where>
+            a.id in
+
+            <!--<if test="idList!=null and idList.size()>0">
+            -->
+            <foreach collection="idList" item="i" open="(" separator="," close=")">
+                #{i}
+            </foreach>
+
+            <!--</if>
+            -->
+        </where>
+
+
+    </select>
+
+
+</mapper>
