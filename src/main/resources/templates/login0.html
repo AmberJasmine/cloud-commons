@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+		<script type="text/javascript" src="../js/axios.js"></script>
+<!--		<script type="text/javascript" src="../js/index.js"></script>-->
+<!--		<script type="text/javascript" src="../js/index.css"></script>-->
+
+		<link rel="stylesheet" href="../js/node_modules/element-ui/lib/theme-chalk/index.css">
+		<script src="../js/node_modules/element-ui/lib/index.js"></script>
+
+		<!--<script src="https://cdn.staticfile.org/vue/2.7.0/vue.min.js"></script>-->
+		<!-- 引入样式 -->
+<!--		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+		<!-- 引入组件库 -->
+<!--		<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+		<style>
+			body {
+				/*background: url(./images/樱花.png);*/
+				/* 设置背景铺满 */
+				background-repeat: no-repeat;
+				background-size: 100%;
+			}
+			form {
+				/* 设置form大小 */
+				width: 400px;
+				/*height: 400px;*/
+				/* 加个背景颜色 */
+				background-color: #E1E9EF;
+				/* 再设置内边距 使得内容更偏向于中央位置 */
+				/* 上方，下方内边距为120px 与 左边与右边均为100px 按照逆时针 */
+				/* 但是会撑大盒子 */
+				padding: 40px 80px;
+				/* 设置文本文字的大小 */
+				font-size: 18px;
+				/* 添加圆角边框 */
+				border-radius: 10px;
+				/* 增加外边距 */
+				/* 上下120px 然后左右居中 */
+				margin: 100px auto;
+			}
+			.textinput {
+				/* 设置宽高 */
+				height: 40px;
+				width: 300px;
+				/* 设置内边距 */
+				padding: 0 35px;
+				/* 去除边框 */
+				border: none;
+				/* 设置背景颜色 */
+				background: #F8F9F9;
+				/* 设置字体大小 */
+				font-size: 15px;
+				/* 给文本框加上阴影 */
+				box-shadow: 0px 1px 1px rgba(255, 255, 255, 0.7), inset 0px 2px 5px #aaaaaa;
+				/* 给文本框加上圆角边框 */
+				border-radius: 5px;
+				/* 给文本框中输入文字加上颜色 */
+				color: saddlebrown;
+			}
+			/* 筛选input标签中 type为"submit"的 进行渲染*/
+			input[type="submit"] {
+				/* 设置宽高 */
+				width: 110px;
+				height: 40px;
+				/* 内部文本居中 */
+				text-align: center;
+				/* 圆角边框 */
+				border-radius: 5px;
+				/* 设置字体 */
+				font: 16px "黑体";
+				/* 设置背景颜色 */
+				background-color: #C0C6CB;
+			}
+			a {
+				/* 去除下划线 */
+				text-decoration: none;
+			}
+			a:hover {
+				/* 悬空的时候有被选中的样子 出现下划线*/
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+				<el-form :model="ruleFormZc"
+						 :rules="rules"
+						 ref="ruleFormZc"
+						 label-width="95px"
+				>
+					<el-form-item label="用户名" prop="userName">
+						<el-input v-model="ruleFormZc.userName" placeholder="请输入用户名"></el-input>
+					</el-form-item>
+					<el-form-item label="密码" prop="passWord">
+						<el-input type="password" v-model="ruleFormZc.passWord" placeholder="请输入密码"></el-input>
+					</el-form-item>
+					<el-form-item label="确认密码" prop="passWordAgain">
+						<el-input type="password" v-model="ruleFormZc.passWordAgain" placeholder="请再次输入密码"></el-input>
+					</el-form-item>
+					<el-form-item label="手机号码" prop="phone">
+						<el-input v-model="ruleFormZc.phone" style="width: 180px" placeholder="请输入手机号"></el-input>
+						<el-button class="btn-orange" style="border-radius: 20px;" :disabled="disabled" @click="messageVerificationCode">{{valiBtn}}</el-button>
+					</el-form-item>
+					<el-form-item label="短信验证码" prop="messageCode">
+						<el-input v-model="ruleFormZc.messageCode" style="width: 180px" placeholder="短信验证码"></el-input>
+					</el-form-item>
+					<el-form-item>
+						<el-button @click="submitFormZc('ruleFormZc')" style="width: 145px;border-radius: 10px">注册</el-button>
+						<el-button @click="resetFormZc('ruleFormZc')" style="width: 145px;border-radius: 10px">重置</el-button>
+					</el-form-item>
+				</el-form>
+		</div>
+
+		<script>
+			const vm = new Vue({
+				el: "#app",
+				data: {
+					// url: "http://localhost:8082",
+					url: "",
+
+					userName: '',
+					passWord: '',
+					phone: '',
+					messageCode: '',
+
+					ruleFormZc: {
+						userName: '',
+						passWord: '',
+						passWordAgain: '',
+						phone: '',
+						messageCode: '',
+					},
+					rules: {
+						userName: [
+							{ required: true, message: '请输入用户名', trigger: 'change' },
+							{ min: 3, max: 16, message: '长度在 3 到 15 个字符', trigger: 'change' }
+						],
+						passWord: [
+							// { required: true, message: '请输入密码', trigger: 'change' }
+							{ required: true, validator: (r,v,c)=>vm.validatePassWord(r,v,c), trigger: 'change' }
+						],
+						passWordAgain: [
+							// { required: true, message: '请再次输入密码', trigger: 'change' }
+							{ required: true, validator: (r,v,c)=>vm.validatePassWordAgain(r,v,c), trigger: 'change' }
+						],
+						phone: [
+							{ required: true, message: '请输入手机号', trigger: 'change' }
+						],
+						messageCode: [
+							{ required: true, message: '请输入验证码', trigger: 'change' }
+						],
+					},
+
+					valiBtn: '获取验证码',
+					disabled: false,
+					time: 60
+				},
+
+				created() {},
+
+				mounted: function() {},
+
+				methods: {
+					validatePassWord (rule, value, callback) {
+						if(value === '') {
+							callback(new Error('请输入密码'));
+						} else {
+							if(this.ruleFormZc.passWordAgain !== '') {
+								this.$refs.ruleFormZc.validateField('passWordAgain');
+							}
+							callback();
+						}
+					},
+					validatePassWordAgain(rule, value, callback) {
+						if(value === '') {
+							callback(new Error('请再次输入密码'));
+						} else if(value !== this.ruleFormZc.passWord) {
+							callback(new Error('两次输入密码不一致!'));
+						} else {
+							callback();
+						}
+					},
+					// 提交注册信息
+					submitFormZc(formName) {
+						this.$refs[formName].validate((valid) => {
+							if (valid) {
+								// 校验成功注册
+								this.zhuce();
+							} else {
+								console.log('error submit!!');
+								return false;
+							}
+						});
+					},
+					resetFormZc(formName) {
+						this.ruleFormZc.userName= '';
+						this.ruleFormZc.passWord= '';
+						this.ruleFormZc.passWordAgain= '';
+						this.ruleFormZc.phone= '';
+						this.ruleFormZc.messageCode= '';
+					},
+					zhuce() {
+						axios.post(this.url + '/sysUser/save', {
+							userId: this.ruleFormZc.userName,
+							pd: this.ruleFormZc.passWord,
+							phone: this.ruleFormZc.phone,
+							messageCode: this.ruleFormZc.messageCode
+						}).then(response => {
+							console.log(response);
+							if(response.data.success) {
+								alert("注册成功");
+								// 登录成功，跳转到首页
+								window.location.href = "auth";
+							} else {
+								// 登录失败，显示错误信息
+								alert(response.data.msg);
+							}
+						}).catch(error => {
+							console.error(error);
+							alert('登录失败，请重试');
+						});
+					},
+
+					chongzhi() {
+						this.userName = '';
+						this.passWord = '';
+						this.phone = '';
+						this.messageCode = '';
+					},
+
+					pictureVerificationCode() {
+						var pars = {};
+						$.ajax({
+							type: "get",
+							url: this.url + "/login/verifi-code",
+							data: pars,
+							dataType: "json",
+							success: function(data) {
+								console.log(data);
+							},
+							error: function(e) {
+								console.log(e);
+							}
+						}).then(res => {
+							this.base = res.data.base64;
+							this.code = res.data.code;
+							console.log(">>>," + res.data);
+						});
+					},
+
+					messageVerificationCode() {
+						var pars = {
+							"phone": this.ruleFormZc.phone
+						};
+						$.ajax({
+							type: "get",
+							url: this.url + "/login/sendMessage",
+							data: pars,
+							dataType: "json",
+							success: function(data) {
+								console.log("获取的数据>>", data);
+							},
+							error: function(e) {
+								console.log("eeeeeeee>>", e);
+							}
+						}).then(res => {
+							if(res.code == '200') {
+								this.tackBtn(); //验证码倒数60秒
+							} else {
+								alert(res.msg);
+							}
+							console.log(">>>," + res);
+						});
+					},
+
+					tu() {
+						console.log("data:image/png;base64," + this.base);
+						return "data:image/png;base64," + this.base;
+					},
+
+					tackBtn() { //验证码倒数60秒
+						let time = 60;
+						let timer = setInterval(() => {
+							if(time == 0) {
+								clearInterval(timer);
+								this.valiBtn = '获取验证码';
+								this.disabled = false;
+							} else {
+								this.disabled = true;
+								this.valiBtn = time + '秒后重试';
+								time--;
+							}
+						}, 1000);
+					},
+
+				}
+			})
+		</script>
+
+	</body>
+
+</html>

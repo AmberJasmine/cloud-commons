@@ -25,4 +25,16 @@ public class PageController {
         return "authTest";
     }
 
+    // 注册页面
+    @GetMapping("/login0")
+    public String login0() {
+        return "login0";
+    }
+
+    // 忘记密码页面
+    @GetMapping("/forgotPassword")
+    public String forgotPassword() {
+        return "forgotPassword";
+    }
+
 }

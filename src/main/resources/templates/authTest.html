@@ -237,6 +237,10 @@
                 }
 
                 var file = document.getElementById("upload").files[0];
+                if(file === undefined){
+                    alert("请选择一个文件");
+                    return;
+                }
                 console.log("单文件上传日志,", file);
                 var formData = new FormData();
                 formData.append("file", file);
@@ -255,7 +259,7 @@
                     contentType: false,
                     data: formData,
                     success: function(data) {
-                        alert(JSON.stringify(data));
+                        alert(JSON.stringify(data.msg));
                         temp.filesByMaster();
                     }
                 })
@@ -295,7 +299,7 @@
 
             // 获取关联的附件
             filesByMaster(flag) {
-                debugger
+                // debugger
                 var childCurrentNodeId = this.$refs.myComponent.currentNodeId;
                 this.childData.currentNodeId = childCurrentNodeId;
                 var childCurrentCheckNodeIds = this.$refs.myComponent.currentCheckedNodeIds;

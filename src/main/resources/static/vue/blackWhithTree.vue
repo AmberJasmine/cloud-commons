@@ -1,12 +1,14 @@
 <template>
 	<div>
 		<el-input placeholder="输入关键字进行过滤" v-model="filterText" style="width: 300px;">
-		</el-input><label style="color: red; font-size: 12px">单选优先级高于多选</label>
+		</el-input>
 		<div v-if="currentNodeName!==''">
 			<label style="size: letter">当前选择项目：</label>
       <el-tag size="small" style="color: black; background-color: #eeeeee; border-style: solid; border-width: 1px; margin-right: 10px">
         {{currentNodeName}}（{{currentNodeId}}）
       </el-tag>
+      <br>
+      <label style="color: red; font-size: 12px">单选优先级高于多选</label>
 		</div>
 		<br />
 		<!--default-expand-all-->

@@ -443,7 +443,7 @@
 								console.log("login-profilePhoto = ",localStorage.getItem("login-profilePhoto"));
 
 								// 登录成功，跳转到首页
-								window.location.href = "navmenu";
+								window.location.href = "auth";
 								this.userLoginLog(2,response.data.data.userId);
 							} else {
 								// 登录失败，显示错误信息
